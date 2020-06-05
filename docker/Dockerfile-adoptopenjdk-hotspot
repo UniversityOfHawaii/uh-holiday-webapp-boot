@@ -1,0 +1,20 @@
+FROM tomcat:8.5.55-jdk8-adoptopenjdk-hotspot as builder
+WORKDIR /workspace
+# This let's us put the dependencies in the workspace so when we use the image
+# with a bind-mounted workspace the dependencies will persist.
+ENV MAVEN_OPTS="-Dmaven.repo.local=/workspace/.mvn-dependencies"
+
+FROM builder as package
+COPY ./.mvn ./.mvn
+COPY ./.mvn-dependencies ./.mvn-dependencies
+COPY ./mvnw pom.xml ./
+# Run the install but skip anything that requires a main class.
+# This helps cache the dependency download and will only redownload
+# if the wrapper, pom.xml, or .mvn-dependencies folder changes.
+RUN ./mvnw install -Dmaven.main.skip -Dspring-boot.repackage.skip
+COPY ./src ./src
+RUN ./mvnw clean test
+RUN ./mvnw -Dmaven.test.skip=true clean package
+
+FROM tomcat:8.5.55-jdk8-adoptopenjdk-hotspot
+COPY --from=package /workspace/target/holiday.war /usr/local/tomcat/webapps/holiday#holiday-adopt.war

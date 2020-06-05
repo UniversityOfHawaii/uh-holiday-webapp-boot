@@ -1,0 +1,47 @@
+version: '3.7'
+services:
+  holiday-zulu:
+    image: docprod.pvt.hawaii.edu/holiday-zulu:SNAPSHOT
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile-zulu
+    networks:
+      - proxy
+    deploy:
+      labels:
+        traefik.enable: "true"
+        traefik.http.routers.holiday-zulu-router.rule: "PathPrefix(`/holiday/holiday-zulu`)"
+        traefik.http.routers.holiday-zulu-router.service: "holiday-zulu-service"
+        traefik.http.services.holiday-zulu-service.loadbalancer.server.port: "8080"
+
+  holiday-corretto:
+    image: docprod.pvt.hawaii.edu/holiday-corretto:SNAPSHOT
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile-corretto
+    networks:
+      - proxy
+    deploy:
+      labels:
+        traefik.enable: "true"
+        traefik.http.routers.holiday-corretto-router.rule: "PathPrefix(`/holiday/holiday-corretto`)"
+        traefik.http.routers.holiday-corretto-router.service: "holiday-corretto-service"
+        traefik.http.services.holiday-corretto-service.loadbalancer.server.port: "8080"
+
+  holiday-adoptopenjdk-hotspot:
+    image: docprod.pvt.hawaii.edu/holiday-adoptopenjdk-hotspot:SNAPSHOT
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile-adoptopenjdk-hotspot
+    networks:
+      - proxy
+    deploy:
+      labels:
+        traefik.enable: "true"
+        traefik.http.routers.holiday-adopt-router.rule: "PathPrefix(`/holiday/holiday-adopt`)"
+        traefik.http.routers.holiday-adopt-router.service: "holiday-adopt-service"
+        traefik.http.services.holiday-adopt-service.loadbalancer.server.port: "8080"
+
+networks:
+  proxy:
+    external: true

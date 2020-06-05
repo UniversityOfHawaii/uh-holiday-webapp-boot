@@ -1,0 +1,34 @@
+version: '3.7'
+services:
+  holiday-zulu:
+    image: holiday-zulu-builder
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile-zulu
+      target: builder
+    volumes:
+      - ../:/workspace
+    ports:
+      - 8080:8080
+
+  holiday-corretto:
+    image: holiday-corretto-builder
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile-corretto
+      target: builder
+    volumes:
+      - ../:/workspace
+    ports:
+      - 8080:8080
+
+  holiday-adoptopenjdk-hotspot:
+    image: holiday-adoptopenjdk-hotspot-builder
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile-adoptopenjdk-hotspot
+      target: builder
+    volumes:
+      - ../:/workspace
+    ports:
+      - 8080:8080

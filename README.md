@@ -1,3 +1,106 @@
+# OpenJDK Version Comparison
+
+### Prerequisites
+
+This project relies on having two other projects adjacent to this one:
+* traefik
+* swarm-monitoring
+
+##### Configure Prometheus to scrape all three holiday versions:
+
+Add the following to your swarm monitoring project:
+
+../swarm-monitoring/swarm-volumes/swarm-monitoring/prometheus-data/prometheus-dynamic-config.yml
+```yml
+- targets: ['holiday-zulu:8080']
+  labels:
+    job: holiday-zulu
+    application: holiday-zulu
+    __scheme__: http
+    __metrics_path__: /holiday/holiday-zulu/actuator/prometheus
+
+- targets: ['holiday-corretto:8080']
+  labels:
+    job: holiday-corretto
+    application: holiday-corretto
+    __scheme__: http
+    __metrics_path__: /holiday/holiday-corretto/actuator/prometheus
+
+- targets: ['holiday-adoptopenjdk-hotspot:8080']
+  labels:
+    job: holiday-adoptopenjdk-hotspot
+    application: holiday-adoptopenjdk-hotspot
+    __scheme__: http
+    __metrics_path__: /holiday/holiday-adopt/actuator/prometheus
+```
+
+### Developing
+
+You can start a development environment for any of the jdks:
+
+```shell
+make zulu-shell
+or
+make corretto-shell
+or
+make adoptopenjdk-hotspot-shell
+```
+
+### Deploying locally
+
+First, build the deployment images (which will run all the tests as well):
+
+```shell
+make build-deployment-images
+```
+
+Then, start traefik and the swarm-monitoring projects, followed by the holiday apps:
+
+```shell
+make start-traefik start-monitoring deploy
+```
+
+##### URLs:
+
+**Holiday apps:**
+* http://localhost/holiday/holiday-zulu
+* http://localhost/holiday/holiday-corretto
+* http://localhost/holiday/holiday-adopt
+
+**Holiday Prometheus scrape:**
+* http://localhost/holiday/holiday-zulu/actuator/prometheus
+* http://localhost/holiday/holiday-corretto/actuator/prometheus
+* http://localhost/holiday/holiday-adopt/actuator/prometheus
+
+**Spring Boot Grafana Dashboard:**
+* http://localhost/monitoring/grafana/d/lyoEhvPWk/spring-boot-statistics?orgId=1
+
+**Prometheus targets:**
+* http://localhost/monitoring/prometheus/targets
+
+### Deploying to TEST
+
+The project will build with each push according to the `Jenkinsfile`.
+
+##### URLs:
+
+**Holiday apps:**
+* https://doctest.pvt.hawaii.edu/holiday/holiday-zulu
+* https://doctest.pvt.hawaii.edu/holiday/holiday-corretto
+* https://doctest.pvt.hawaii.edu/holiday/holiday-adopt
+
+**Holiday Prometheus scrape:**
+* https://doctest.pvt.hawaii.edu/holiday/holiday-zulu/actuator/prometheus
+* https://doctest.pvt.hawaii.edu/holiday/holiday-corretto/actuator/prometheus
+* https://doctest.pvt.hawaii.edu/holiday/holiday-adopt/actuator/prometheus
+
+**Spring Boot Grafana Dashboard:**
+* https://doctest.pvt.hawaii.edu/monitoring/grafana/d/lyoEhvPWk/spring-boot-statistics?orgId=1
+
+**Prometheus targets:**
+* https://doctest.pvt.hawaii.edu/monitoring/prometheus/targets
+
+# Original README.md
 A web application to display holidays used by UH.
 
 [![Build Status](https://travis-ci.org/fduckart/uh-holiday-webapp-boot.png?branch=master)](https://travis-ci.org/fduckart/uh-holiday-webapp-boot)
@@ -46,4 +149,3 @@ To run a specific test class:
 To run a single method in a test class:
 
     $ ./mvnw clean test -Dtest=StringsTest#trunctate
-
