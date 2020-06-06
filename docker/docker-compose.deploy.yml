@@ -42,6 +42,21 @@ services:
         traefik.http.routers.holiday-adopt-router.service: "holiday-adopt-service"
         traefik.http.services.holiday-adopt-service.loadbalancer.server.port: "8080"
 
+
+  holiday-oracle:
+    image: docprod.pvt.hawaii.edu/holiday-oracle:SNAPSHOT
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile-oracle
+    networks:
+      - proxy
+    deploy:
+      labels:
+        traefik.enable: "true"
+        traefik.http.routers.holiday-oracle-router.rule: "PathPrefix(`/holiday/holiday-oracle`)"
+        traefik.http.routers.holiday-oracle-router.service: "holiday-oracle-service"
+        traefik.http.services.holiday-oracle-service.loadbalancer.server.port: "8080"
+
 networks:
   proxy:
     external: true

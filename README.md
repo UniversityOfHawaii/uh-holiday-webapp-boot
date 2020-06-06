@@ -32,6 +32,13 @@ Add the following to your swarm monitoring project:
     application: holiday-adoptopenjdk-hotspot
     __scheme__: http
     __metrics_path__: /holiday/holiday-adopt/actuator/prometheus
+
+- targets: ['holiday-oracle:8080']
+  labels:
+    job: holiday-oracle
+    application: holiday-oracle
+    __scheme__: http
+    __metrics_path__: /holiday/holiday-oracle/actuator/prometheus
 ```
 
 ### Developing
@@ -44,6 +51,8 @@ or
 make corretto-shell
 or
 make adoptopenjdk-hotspot-shell
+or
+make oracle-shell
 ```
 
 ### Deploying locally

@@ -7,6 +7,9 @@ corretto-shell:
 adoptopenjdk-hotspot-shell:
 	docker-compose -f docker/docker-compose.build.yml run --rm --service-ports holiday-zulu bash -l
 
+oracle-shell:
+	docker-compose -f docker/docker-compose.build.yml run --rm --service-ports holiday-oracle bash -l
+
 build-deployment-images:
 	docker-compose -f docker/docker-compose.deploy.yml build
 

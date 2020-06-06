@@ -32,3 +32,16 @@ services:
       - ../:/workspace
     ports:
       - 8080:8080
+
+
+  holiday-oracle:
+    image: holiday-oracle-builder
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile-oracle
+      target: builder
+        
+    volumes:
+      - ../:/workspace
+    ports:
+      - 8080:8080
